@@ -44,7 +44,7 @@ Optimizes the performance of applications by caching commonly used font data.
 Windows creates an index file to speed up the search. This causes a reduction in SSD life. If you do not use this feature, it is recommended to turn it off
 </details>
 </details>
-<details><B><summary> • + Türkçe kılavuz</B></summary>
+<details><B><summary> • Türkçe kılavuz</B></summary>
 
 ![Repo1](https://raw.githubusercontent.com/OgnitorenKs/SSD_Optimizer/main/.github/TR.png)
 
