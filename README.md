@@ -7,7 +7,10 @@
 All rights of the work belong to Hüseyin UZUNYAYLA. It is forbidden to develop, copy, change the content of the work. If you want to share the application on different platforms, you need to get permission from me.
 
 # SSDOptimizer
-<details><B><+><summary> • English guide</B></+></summary>
+![Repo1](https://raw.githubusercontent.com/OgnitorenKs/SSD_Optimizer/main/.github/EN.png)
+![Repo1](https://raw.githubusercontent.com/OgnitorenKs/SSD_Optimizer/main/.github/TR.png)
+
+<details><B><summary> • English guide</B></summary>
 <details><B><summary> 1 - Hibernate</B></summary>
 When you put the computer into hibernation, it stores the current settings, open files and all programs in the system file "hiberfil.sys". It uses this data to boot the system quickly. SSDs do not need this service as they boot up fast anyway. It will perform a considerable write operation on the disk. This has a negative impact on SSD health.
 </details><details><B><summary> 2 - Time stamp</B></summary>
