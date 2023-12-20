@@ -22,7 +22,7 @@ chcp 65001 > NUL 2>&1
 setlocal enabledelayedexpansion
 cls
 Call :ABC
-title SSD_Optimizer │ ?/14 │ %ABC%
+title SSD_Optimizer │ ?/13 │ %ABC%
 mode con cols=100 lines=30
 :: -------------------------------------------------------------
 :: Renklendirme
@@ -60,6 +60,7 @@ FOR /F "tokens=6" %%a in ('Dism /Online /Get-intl ^| Find /I "Default system UI 
 	if %%a EQU tr-TR (set Dil=TR)
 	if %%a NEQ tr-TR (set Dil=EN)
 )
+set Dil=EN
 :: -------------------------------------------------------------
 :: Eski kalıntıları sil
 DEL /F /Q /A "%Temp%\DiskDetail" > NUL 2>&1

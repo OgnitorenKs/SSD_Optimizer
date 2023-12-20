@@ -8,8 +8,7 @@ All rights of the work belong to Hüseyin UZUNYAYLA. It is forbidden to develop,
 
 # SSDOptimizer
 
-<details><B><summary> 1 - Turkish</B></summary>
-
+<details><H1><summary> 1 - Turkish</H1></summary>
 <details><B><summary> 1 - Hazırda beklet</B></summary>
 Bilgisayarı hazırda beklet moduna aldığınızda mevcut ayarlar, açık dosyaları ve tüm programları "hiberfil.sys" sistem dosyası içinde saklar. Sistemi hızlı açmak için bu verileri kullanır. SSD'ler zaten hızlı açıldığı için bu hizmete gerek yoktur. Disk üzerinde hatırı sayılır bir yazma işlemi yapacaktır. Bu da SSD sağlığını olumsuz etkileyen bir durumdur.
 </details><details><B><summary> 2 - Zaman damgası</B></summary>
