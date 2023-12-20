@@ -7,10 +7,13 @@
 All rights of the work belong to Hüseyin UZUNYAYLA. It is forbidden to develop, copy, change the content of the work. If you want to share the application on different platforms, you need to get permission from me.
 
 # SSDOptimizer
-![Repo1](https://raw.githubusercontent.com/OgnitorenKs/SSD_Optimizer/main/.github/EN.png)
-![Repo1](https://raw.githubusercontent.com/OgnitorenKs/SSD_Optimizer/main/.github/TR.png)
+
+
 
 <details><B><summary> • English guide</B></summary>
+
+![Repo1](https://raw.githubusercontent.com/OgnitorenKs/SSD_Optimizer/main/.github/EN.png)
+
 <details><B><summary> 1 - Hibernate</B></summary>
 When you put the computer into hibernation, it stores the current settings, open files and all programs in the system file "hiberfil.sys". It uses this data to boot the system quickly. SSDs do not need this service as they boot up fast anyway. It will perform a considerable write operation on the disk. This has a negative impact on SSD health.
 </details><details><B><summary> 2 - Time stamp</B></summary>
@@ -42,6 +45,9 @@ Windows creates an index file to speed up the search. This causes a reduction in
 </details>
 </details>
 <details><B><summary> • + Türkçe kılavuz</B></summary>
+
+![Repo1](https://raw.githubusercontent.com/OgnitorenKs/SSD_Optimizer/main/.github/TR.png)
+
 <details><B><summary> 1 - Hazırda beklet</B></summary>
 Bilgisayarı hazırda beklet moduna aldığınızda mevcut ayarlar, açık dosyaları ve tüm programları "hiberfil.sys" sistem dosyası içinde saklar. Sistemi hızlı açmak için bu verileri kullanır. SSD'ler zaten hızlı açıldığı için bu hizmete gerek yoktur. Disk üzerinde hatırı sayılır bir yazma işlemi yapacaktır. Bu da SSD sağlığını olumsuz etkileyen bir durumdur.
 </details><details><B><summary> 2 - Zaman damgası</B></summary>
