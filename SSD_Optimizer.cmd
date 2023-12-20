@@ -21,6 +21,7 @@ echo off
 chcp 65001 > NUL 2>&1
 setlocal enabledelayedexpansion
 cls
+cd /d "%~dp0"
 Call :ABC
 title SSD_Optimizer │ ?/13 │ %ABC%
 mode con cols=100 lines=30
@@ -50,8 +51,16 @@ echo.
 echo.
 echo.
 :: -------------------------------------------------------------
+dir /b "%~dp0SSD_Optimizer.CMD" > NUL 2>&1
+	if %errorlevel% NEQ 0 (cls&echo.
+						   echo ► %R%[91m Dosya adını%R%[37m "SSD_Optimizer.cmd"%R%[91m olarak kayıt ediniz %R%[0m
+						   echo.
+						   echo ► %R%[91m Save the file name as%R%[37m "SSD_Optimizer.cmd" %R%[0m
+						   timeout /t 10 /nobreak >NUL
+						   exit
+)
+:: -------------------------------------------------------------
 :: Yönetici yetkisi
-cd /d "%~dp0"
 reg query "HKU\S-1-5-19" > NUL 2>&1
 	if !errorlevel! NEQ 0 (Call :Powershell "Start-Process '%~dp0SSD_Optimizer.CMD' -Verb Runas"&exit)
 :: -------------------------------------------------------------
