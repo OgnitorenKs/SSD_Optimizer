@@ -57,10 +57,12 @@ reg query "HKU\S-1-5-19" > NUL 2>&1
 :: -------------------------------------------------------------
 :: Sistem dil entegrasyonu
 FOR /F "tokens=6" %%a in ('Dism /Online /Get-intl ^| Find /I "Default system UI language"') do (
-	if %%a EQU tr-TR (set Dil=TR)
-	if %%a NEQ tr-TR (set Dil=EN)
+	if "%%a" EQU "tr-TR" (set Dil=TR)
+	if "%%a" NEQ "tr-TR" (set Dil=EN)
 )
-set Dil=EN
+:: Varsayılan dili değiştirmek için aşağıdaki "set Dil=" değişkenine istediğiniz dili tanımlayın. Yukarıdaki dilleri seçebilirsiniz. 
+:: Ayrıca aşağıdaki yorum satırını bozmayı ihmal etmeyin yani "::" silmeyi unutmayın.
+::set Dil=EN
 :: -------------------------------------------------------------
 :: Eski kalıntıları sil
 DEL /F /Q /A "%Temp%\DiskDetail" > NUL 2>&1
@@ -121,12 +123,14 @@ echo ►%R%[93m SSD_Optimizer │ %ABC%%R%[0m
 echo !SSD!
 Call :Dil A 2 Language_%Dil%_10_
 Call :Dil B 2 Language_%Dil%_9_
-echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
+echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
+::echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
 echo %R%[92m ♦ %R%[90m= !LA2! │ █ = !LB2!
 Call :Dil A 2 Language_%Dil%_11_
 Call :Dil B 2 Language_%Dil%_12_
 echo %R%[90m !LA2! = E,1,2 │ !LB2! = D,2,5
-echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
+echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
+::echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
 set Yuzde_Deger=0
 Call :Dil Z 2 Language_%Dil%_5_
 Call :Dil Y 2 Language_%Dil%_6_
@@ -146,7 +150,8 @@ FOR /L %%a in (1,1,13) do (
 	if %%a EQU 12 (Call :Kontrol_%%a Servis_Query&Call :Total 1 "%%a" "Language_Menu_%Dil%_%%a_" "!LY2!")
 	if %%a EQU 13 (Call :Kontrol_%%a Servis_Query&Call :Total 1 "%%a" "Language_Menu_%Dil%_%%a_" "!LY2!")
 )
-echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
+echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
+::echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
 Call :Dil A 2 Language_%Dil%_8_
 set /p Menu=► %R%[92m!LA2! %R%[90m[E,1,2,3,D,6,7,8] = %R%[0m
 Call :Upper "%Menu%" "Menu"
