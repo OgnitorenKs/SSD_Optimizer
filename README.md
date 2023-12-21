@@ -11,6 +11,7 @@ All rights of the work belong to Hüseyin UZUNYAYLA. It is forbidden to develop,
 
 
 <details><B><summary> • English guide</B></summary>
+-Translated from Turkish to English with "www.deepl.com/translator"
 
 ![Repo1](https://raw.githubusercontent.com/OgnitorenKs/SSD_Optimizer/main/.github/EN.png)
 
