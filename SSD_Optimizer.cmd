@@ -23,11 +23,14 @@ setlocal enabledelayedexpansion
 cls
 cd /d "%~dp0"
 Call :ABC
-title SSD_Optimizer │ ?/13 │ %ABC%
+title SSD_Optimizer_1.3 │ ?/13 │ %ABC%
 mode con cols=100 lines=30
 :: -------------------------------------------------------------
 :: Renklendirme
-FOR /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E#&echo on&for %%b in (1) do rem"') do (set R=%%b)
+FOR /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E#&for %%b in (1) do rem"') do (set R=%%b)
+:: -------------------------------------------------------------
+cd /d "%~dp0"
+FOR /F "tokens=*" %%a in ('cd') do (set Konum=%%a)
 :: -------------------------------------------------------------
 :: Bilgi alırken boş ekran görünmemesi için
 echo. 
@@ -51,18 +54,9 @@ echo.
 echo.
 echo.
 :: -------------------------------------------------------------
-dir /b "%~dp0SSD_Optimizer.CMD" > NUL 2>&1
-	if %errorlevel% NEQ 0 (cls&echo.
-						   echo ► %R%[91m Dosya adını%R%[37m "SSD_Optimizer.cmd"%R%[91m olarak kayıt ediniz %R%[0m
-						   echo.
-						   echo ► %R%[91m Save the file name as%R%[37m "SSD_Optimizer.cmd" %R%[0m
-						   timeout /t 10 /nobreak >NUL
-						   exit
-)
-:: -------------------------------------------------------------
 :: Yönetici yetkisi
 reg query "HKU\S-1-5-19" > NUL 2>&1
-	if !errorlevel! NEQ 0 (Call :Powershell "Start-Process '%~dp0SSD_Optimizer.CMD' -Verb Runas"&exit)
+	if !errorlevel! NEQ 0 (Call :Powershell "Start-Process '%~f0' -Verb Runas"&exit)
 :: -------------------------------------------------------------
 :: Sistem dil entegrasyonu
 FOR /F "tokens=6" %%a in ('Dism /Online /Get-intl ^| Find /I "Default system UI language"') do (
@@ -102,9 +96,9 @@ FOR /F "tokens=3" %%a in ('Findstr /i "Size" %Temp%\DiskDetailAll 2^>NUL') do (
 :: SSD disk verisini kontrol et
 Find "SSD" %Temp%\DiskDetailAll > NUL 2>&1
 	if %errorlevel% NEQ 0 (goto NSSD)
-Call :Dil A 2 Language_%Dil%_2_
-Call :Dil B 2 Language_%Dil%_3_
-Call :Dil C 2 Language_%Dil%_4_
+Call :Dil A 2 Language_!Dil!_2_
+Call :Dil B 2 Language_!Dil!_3_
+Call :Dil C 2 Language_!Dil!_4_
 FOR /F "delims=> tokens=2" %%a in ('Findstr /i "Brand_!Target!_" %Temp%\DiskDetail 2^>NUL') do (
 	FOR /F "delims=> tokens=2" %%b in ('Findstr /i "Model_!Target!_" %Temp%\DiskDetail 2^>NUL') do (
 		FOR /F "delims=> tokens=2" %%c in ('Findstr /i "Boyut_!Target!_" %Temp%\DiskDetail 2^>NUL') do (
@@ -120,7 +114,7 @@ FOR /F "delims=> tokens=2" %%a in ('Findstr /i "Brand_!Target!_" %Temp%\DiskDeta
 goto Optimizer
 :: -------------------------------------------------------------
 :NSSD
-Call :Dil A 2 Language_%Dil%_1_
+Call :Dil A 2 Language_!Dil!_1_
 set SSD=•%R%[91m !LA2! %R%[0m
 goto Optimizer
 
@@ -130,45 +124,45 @@ mode con cols=100 lines=23
 FOR %%a in (YD LA LB LT LS) do (set %%a=)
 echo ►%R%[93m SSD_Optimizer │ %ABC%%R%[0m
 echo !SSD!
-Call :Dil A 2 Language_%Dil%_10_
-Call :Dil B 2 Language_%Dil%_9_
+Call :Dil A 2 Language_!Dil!_10_
+Call :Dil B 2 Language_!Dil!_9_
 echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
 ::echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
 echo %R%[92m ♦ %R%[90m= !LA2! │ █ = !LB2!
-Call :Dil A 2 Language_%Dil%_11_
-Call :Dil B 2 Language_%Dil%_12_
+Call :Dil A 2 Language_!Dil!_11_
+Call :Dil B 2 Language_!Dil!_12_
 echo %R%[90m !LA2! = E,1,2 │ !LB2! = D,2,5
 echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
 ::echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
 set Yuzde_Deger=0
-Call :Dil Z 2 Language_%Dil%_5_
-Call :Dil Y 2 Language_%Dil%_6_
-Call :Dil V 2 Language_%Dil%_7_
+Call :Dil Z 2 Language_!Dil!_5_
+Call :Dil Y 2 Language_!Dil!_6_
+Call :Dil V 2 Language_!Dil!_7_
 FOR /L %%a in (1,1,13) do (
-	if %%a EQU 1 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_%Dil%_%%a_" "!LY2!")
-	if %%a EQU 2 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_%Dil%_%%a_" "!LY2!")
-	if %%a EQU 3 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_%Dil%_%%a_" "!LY2!")
-	if %%a EQU 4 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_%Dil%_%%a_" "!LY2!")
-	if %%a EQU 5 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_%Dil%_%%a_" "!LY2!")
-	if %%a EQU 6 (Call :Kontrol_%%a "Reg_Query" "Servis_Query"&Call :Total 1 "%%a" "Language_Menu_%Dil%_%%a_" "!LY2!")
-	if %%a EQU 7 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_%Dil%_%%a_" "!LY2!")
-	if %%a EQU 8 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_%Dil%_%%a_" "!LY2!")
-	if %%a EQU 9 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_%Dil%_%%a_" "!LY2!")
-	if %%a EQU 10 (Call :Kontrol_%%a&Call :Total 0 "%%a" "Language_Menu_%Dil%_%%a_" "!LV2!")
-	if %%a EQU 11 (Call :Kontrol_%%a Servis_Query&Call :Total 0 "%%a" "Language_Menu_%Dil%_%%a_" "!LV2!")
-	if %%a EQU 12 (Call :Kontrol_%%a Servis_Query&Call :Total 1 "%%a" "Language_Menu_%Dil%_%%a_" "!LY2!")
-	if %%a EQU 13 (Call :Kontrol_%%a Servis_Query&Call :Total 1 "%%a" "Language_Menu_%Dil%_%%a_" "!LY2!")
+	if %%a EQU 1 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_!Dil!_%%a_" "!LY2!")
+	if %%a EQU 2 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_!Dil!_%%a_" "!LY2!")
+	if %%a EQU 3 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_!Dil!_%%a_" "!LY2!")
+	if %%a EQU 4 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_!Dil!_%%a_" "!LY2!")
+	if %%a EQU 5 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_!Dil!_%%a_" "!LY2!")
+	if %%a EQU 6 (Call :Kontrol_%%a "Reg_Query" "Servis_Query"&Call :Total 1 "%%a" "Language_Menu_!Dil!_%%a_" "!LY2!")
+	if %%a EQU 7 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_!Dil!_%%a_" "!LY2!")
+	if %%a EQU 8 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_!Dil!_%%a_" "!LY2!")
+	if %%a EQU 9 (Call :Kontrol_%%a Reg_Query&Call :Total 1 "%%a" "Language_Menu_!Dil!_%%a_" "!LY2!")
+	if %%a EQU 10 (Call :Kontrol_%%a&Call :Total 0 "%%a" "Language_Menu_!Dil!_%%a_" "!LV2!")
+	if %%a EQU 11 (Call :Kontrol_%%a Servis_Query&Call :Total 0 "%%a" "Language_Menu_!Dil!_%%a_" "!LV2!")
+	if %%a EQU 12 (Call :Kontrol_%%a Servis_Query&Call :Total 1 "%%a" "Language_Menu_!Dil!_%%a_" "!LY2!")
+	if %%a EQU 13 (Call :Kontrol_%%a Servis_Query&Call :Total 1 "%%a" "Language_Menu_!Dil!_%%a_" "!LY2!")
 )
 echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
 ::echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
-Call :Dil A 2 Language_%Dil%_8_
+Call :Dil A 2 Language_!Dil!_8_
 set /p Menu=► %R%[92m!LA2! %R%[90m[E,1,2,3,D,6,7,8] = %R%[0m
 Call :Upper "%Menu%" "Menu"
-Call :Dil T 2 Language_%Dil%_13_
-Call :Dil S 2 Language_%Dil%_14_
+Call :Dil T 2 Language_!Dil!_13_
+Call :Dil S 2 Language_!Dil!_14_
 cls
 FOR %%a in (%Menu%) do (Call :Rotasyon "%%a")
-Call :Dil A 2 Language_%Dil%_15_
+Call :Dil A 2 Language_!Dil!_15_
 echo.&echo ►%R%[92m !LA2! %R%[0m
 timeout /t 2 /nobreak > NUL
 goto Optimizer
@@ -179,7 +173,7 @@ goto Optimizer
 :: Dil verilerini buradan alıyorum. Call komutu ile buraya uygun değerleri gönderiyorum.
 :: %~1= Harf │ %~2= tokens değeri │ %~3= Find değeri
 set L%~1%~2=
-FOR /F "delims=> tokens=%~2" %%g in ('Findstr /i "%~3" %~dp0SSD_Optimizer.CMD 2^>NUL') do (set L%~1%~2=%%g)
+FOR /F "delims=> tokens=%~2" %%g in ('Findstr /i "%~3" %Konum%\SSD_Optimizer.CMD 2^>NUL') do (set L%~1%~2=%%g)
 goto :eof
 
 :: -------------------------------------------------------------
@@ -192,7 +186,7 @@ goto :eof
 
 :: -------------------------------------------------------------
 :ABC
-set ABC=OgnitorenKS
+set ABC=OgnitorenKs
 goto :eof 
 
 :: -------------------------------------------------------------
@@ -215,7 +209,7 @@ goto :eof
 :Total
 Call :Dil A 2 %~3
 if !Yuzde! EQU %~1 (set /a YD+=1)
-title SSD_Optimizer │ !YD!/13 │ %ABC%
+title SSD_Optimizer_1.3 │ !YD!/13 │ %ABC%
 if %~2 GTR 9 (echo  %R%[92m%~2%R%[90m- !Check!%R%[33m !LA2! %R%[90m[!LZ2!= %~4]%R%[0m)
 if %~2 LEQ 9 (echo  %R%[92m %~2%R%[90m- !Check!%R%[33m !LA2! %R%[90m[!LZ2!= %~4]%R%[0m)
 goto :eof
@@ -370,14 +364,14 @@ goto :eof
 :Rotasyon
 if %~1 EQU E (set Proces=E&goto :eof)
 if %~1 EQU D (set Proces=D&goto :eof)
-if %~1 LEQ 9 (if !Proces! EQU E (Call :Dil A 2 Language_Menu_%Dil%_%~1_&echo •%R%[36m !LA2!%R%[37m !LT2!%R%[0m&Call :Kontrol_%~1 "Reg_ON" "SC")
-			  if !Proces! EQU D (Call :Dil A 2 Language_Menu_%Dil%_%~1_&echo •%R%[36m !LA2!%R%[37m !LS2!%R%[0m&Call :Kontrol_%~1 "Reg_OFF" "SC")
+if %~1 LEQ 9 (if !Proces! EQU E (Call :Dil A 2 Language_Menu_!Dil!_%~1_&echo •%R%[36m !LA2!%R%[37m !LT2!%R%[0m&Call :Kontrol_%~1 "Reg_ON" "SC")
+			  if !Proces! EQU D (Call :Dil A 2 Language_Menu_!Dil!_%~1_&echo •%R%[36m !LA2!%R%[37m !LS2!%R%[0m&Call :Kontrol_%~1 "Reg_OFF" "SC")
 		     )
-if %~1 EQU 10 (if !Proces! EQU E (Call :Dil A 2 Language_Menu_%Dil%_%~1_&echo •%R%[36m !LA2!%R%[37m !LT2!%R%[0m&Call :K_10_ 0)
-			   if !Proces! EQU D (Call :Dil A 2 Language_Menu_%Dil%_%~1_&echo •%R%[36m !LA2!%R%[37m !LS2!%R%[0m&Call :K_10_ 1)
+if %~1 EQU 10 (if !Proces! EQU E (Call :Dil A 2 Language_Menu_!Dil!_%~1_&echo •%R%[36m !LA2!%R%[37m !LT2!%R%[0m&Call :K_10_ 0)
+			   if !Proces! EQU D (Call :Dil A 2 Language_Menu_!Dil!_%~1_&echo •%R%[36m !LA2!%R%[37m !LS2!%R%[0m&Call :K_10_ 1)
 			  )
-if %~1 GEQ 11 (if !Proces! EQU E (Call :Dil A 2 Language_Menu_%Dil%_%~1_&echo •%R%[36m !LA2!%R%[37m !LT2!%R%[0m&Call :Kontrol_%~1 SC)
-			   if !Proces! EQU D (Call :Dil A 2 Language_Menu_%Dil%_%~1_&echo •%R%[36m !LA2!%R%[37m !LS2!%R%[0m&Call :Kontrol_%~1 SC)
+if %~1 GEQ 11 (if !Proces! EQU E (Call :Dil A 2 Language_Menu_!Dil!_%~1_&echo •%R%[36m !LA2!%R%[37m !LT2!%R%[0m&Call :Kontrol_%~1 SC)
+			   if !Proces! EQU D (Call :Dil A 2 Language_Menu_!Dil!_%~1_&echo •%R%[36m !LA2!%R%[37m !LS2!%R%[0m&Call :Kontrol_%~1 SC)
 			  )
 goto :eof
 
