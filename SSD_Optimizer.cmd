@@ -22,17 +22,15 @@ chcp 65001 > NUL 2>&1
 setlocal enabledelayedexpansion
 cls
 cd /d "%~dp0"
+FOR /F "tokens=*" %%a in ('cd') do (set Konum=%%a)
 Call :ABC
 title SSD_Optimizer_1.3 │ ?/13 │ %ABC%
 mode con cols=100 lines=30
-:: -------------------------------------------------------------
-:: Renklendirme
+REM -------------------------------------------------------------
+REM Renklendirme
 FOR /F "tokens=1,2 delims=#" %%a in ('"prompt #$H#$E#&for %%b in (1) do rem"') do (set R=%%b)
-:: -------------------------------------------------------------
-cd /d "%~dp0"
-FOR /F "tokens=*" %%a in ('cd') do (set Konum=%%a)
-:: -------------------------------------------------------------
-:: Bilgi alırken boş ekran görünmemesi için
+REM -------------------------------------------------------------
+REM Bilgi alırken boş ekran görünmemesi için
 echo. 
 echo.
 echo.
@@ -53,87 +51,86 @@ echo.
 echo.
 echo.
 echo.
-:: -------------------------------------------------------------
-:: Yönetici yetkisi
+REM -------------------------------------------------------------
+REM Yönetici yetkisi
 reg query "HKU\S-1-5-19" > NUL 2>&1
 	if !errorlevel! NEQ 0 (Call :Powershell "Start-Process '%~f0' -Verb Runas"&exit)
-:: -------------------------------------------------------------
-:: Sistem dil entegrasyonu
+REM -------------------------------------------------------------
+REM Sistem dil entegrasyonu
 FOR /F "tokens=6" %%a in ('Dism /Online /Get-intl ^| Find /I "Default system UI language"') do (
 	if "%%a" EQU "tr-TR" (set Dil=TR)
 	if "%%a" NEQ "tr-TR" (set Dil=EN)
 )
-:: Varsayılan dili değiştirmek için aşağıdaki "set Dil=" değişkenine istediğiniz dili tanımlayın. Yukarıdaki dilleri seçebilirsiniz. 
-:: Ayrıca aşağıdaki yorum satırını bozmayı ihmal etmeyin yani "::" silmeyi unutmayın.
-::set Dil=EN
-:: -------------------------------------------------------------
-:: Eski kalıntıları sil
-DEL /F /Q /A "%Temp%\DiskDetail" > NUL 2>&1
-:: Güncel disk bilgilerini al
-Call :Powershell "Get-PhysicalDisk | Select-Object -Property MediaType,FriendlyName,Size | Format-List" > %Temp%\DiskDetailAll
+REM Varsayılan dili değiştirmek için aşağıdaki "set Dil=" değişkenine istediğiniz dili tanımlayın. Yukarıdaki dilleri seçebilirsiniz. 
+REM Ayrıca aşağıdaki yorum satırını bozmayı ihmal etmeyin yani "::" silmeyi unutmayın.
+REM set Dil=EN
+REM -------------------------------------------------------------
+REM Eski kalıntıları sil
+DEL /F /Q /A "%AppData%\DiskDetail" > NUL 2>&1
+REM Güncel disk bilgilerini al
+Call :Powershell "Get-PhysicalDisk | Select-Object -Property MediaType,FriendlyName,Size | Format-List" > %AppData%\DiskDetailAll
+REM SSD disk verisini kontrol et
+Find "SSD" %AppData%\DiskDetailAll > NUL 2>&1
+	if %errorlevel% NEQ 0 (goto No_SSD)
+REM SSD bilgisini alır
 set Count=0
-FOR /F "tokens=3" %%a in ('Findstr /i "MediaType" %Temp%\DiskDetailAll 2^>NUL') do (
+FOR /F "tokens=3" %%a in ('Findstr /i "MediaType" %AppData%\DiskDetailAll 2^>NUL') do (
 	set /a Count+=1
-	echo  TYPE_!Count!_^>%%a^> >> %Temp%\DiskDetail
-	if %%a EQU SSD (set Target=!Count!)
+	echo  TYPE_!Count!_^>%%a^> >> %AppData%\DiskDetail
+	if "%%a" EQU "SSD" (set Target=!Count!)
 )
 set Count=0
-FOR /F "tokens=3" %%a in ('Findstr /i "FriendlyName" %Temp%\DiskDetailAll 2^>NUL') do (
+FOR /F "tokens=3" %%a in ('Findstr /i "FriendlyName" %AppData%\DiskDetailAll 2^>NUL') do (
 	set /a Count+=1
-	echo  Brand_!Count!_^>%%a^> >> %Temp%\DiskDetail
+	echo  Brand_!Count!_^>%%a^> >> %AppData%\DiskDetail
 )
 set Count=0
-FOR /F "tokens=4" %%a in ('Findstr /i "FriendlyName" %Temp%\DiskDetailAll 2^>NUL') do (
+FOR /F "tokens=4" %%a in ('Findstr /i "FriendlyName" %AppData%\DiskDetailAll 2^>NUL') do (
 	set /a Count+=1
-	echo  Model_!Count!_^>%%a^> >> %Temp%\DiskDetail
+	echo  Model_!Count!_^>%%a^> >> %AppData%\DiskDetail
 )
 set Count=0
-FOR /F "tokens=3" %%a in ('Findstr /i "Size" %Temp%\DiskDetailAll 2^>NUL') do (
+FOR /F "tokens=3" %%a in ('Findstr /i "Size" %AppData%\DiskDetailAll 2^>NUL') do (
 	set /a Count+=1
-	echo  Boyut_!Count!_^>%%a^> >> %Temp%\DiskDetail
+	echo  Boyut_!Count!_^>%%a^> >> %AppData%\DiskDetail
 )
-:: -------------------------------------------------------------
-:: SSD disk verisini kontrol et
-Find "SSD" %Temp%\DiskDetailAll > NUL 2>&1
-	if %errorlevel% NEQ 0 (goto NSSD)
+REM -------------------------------------------------------------
 Call :Dil A 2 Language_!Dil!_2_
 Call :Dil B 2 Language_!Dil!_3_
 Call :Dil C 2 Language_!Dil!_4_
-FOR /F "delims=> tokens=2" %%a in ('Findstr /i "Brand_!Target!_" %Temp%\DiskDetail 2^>NUL') do (
-	FOR /F "delims=> tokens=2" %%b in ('Findstr /i "Model_!Target!_" %Temp%\DiskDetail 2^>NUL') do (
-		FOR /F "delims=> tokens=2" %%c in ('Findstr /i "Boyut_!Target!_" %Temp%\DiskDetail 2^>NUL') do (
+FOR /F "delims=> tokens=2" %%a in ('Findstr /i "Brand_!Target!_" %AppData%\DiskDetail 2^>NUL') do (
+	FOR /F "delims=> tokens=2" %%b in ('Findstr /i "Model_!Target!_" %AppData%\DiskDetail 2^>NUL') do (
+		FOR /F "delims=> tokens=2" %%c in ('Findstr /i "Boyut_!Target!_" %AppData%\DiskDetail 2^>NUL') do (
 			set Value=%%c
 			Call :Uzunluk 1 !Value!
-			if !Uzunluk1! EQU 10 (set SSD=•%R%[36m !LA2!:%R%[33m %%a %R%[90m│%R%[36m !LB2!:%R%[33m %%b %R%[90m│%R%[36m !LC2!:%R%[33m !Value:~0,1!%R%[37m GB %R%[0m)
-			if !Uzunluk1! EQU 11 (set SSD=•%R%[36m !LA2!:%R%[33m %%a %R%[90m│%R%[36m !LB2!:%R%[33m %%b %R%[90m│%R%[36m !LC2!:%R%[33m !Value:~0,2!%R%[37m GB %R%[0m)
-			if !Uzunluk1! EQU 12 (set SSD=•%R%[36m !LA2!:%R%[33m %%a %R%[90m│%R%[36m !LB2!:%R%[33m %%b %R%[90m│%R%[36m !LC2!:%R%[33m !Value:~0,3!%R%[37m GB %R%[0m)
-			if !Uzunluk1! EQU 13 (set SSD=•%R%[36m !LA2!:%R%[33m %%a %R%[90m│%R%[36m !LB2!:%R%[33m %%b %R%[90m│%R%[36m !LC2!:%R%[33m !Value:~0,1!%R%[37m TB %R%[0m)
+			if !Uzunluk1! EQU 10 (set SSD_Info=%R%[36m !LA2!:%R%[33m %%a %R%[90m│%R%[36m !LB2!:%R%[33m %%b %R%[90m│%R%[36m !LC2!:%R%[33m !Value:~0,1!%R%[37m GB %R%[0m)
+			if !Uzunluk1! EQU 11 (set SSD_Info=%R%[36m !LA2!:%R%[33m %%a %R%[90m│%R%[36m !LB2!:%R%[33m %%b %R%[90m│%R%[36m !LC2!:%R%[33m !Value:~0,2!%R%[37m GB %R%[0m)
+			if !Uzunluk1! EQU 12 (set SSD_Info=%R%[36m !LA2!:%R%[33m %%a %R%[90m│%R%[36m !LB2!:%R%[33m %%b %R%[90m│%R%[36m !LC2!:%R%[33m !Value:~0,3!%R%[37m GB %R%[0m)
+			if !Uzunluk1! EQU 13 (set SSD_Info=%R%[36m !LA2!:%R%[33m %%a %R%[90m│%R%[36m !LB2!:%R%[33m %%b %R%[90m│%R%[36m !LC2!:%R%[33m !Value:~0,1!%R%[37m TB %R%[0m)
 		)
 	)
 )
 goto Optimizer
-:: -------------------------------------------------------------
-:NSSD
+REM -------------------------------------------------------------
+:No_SSD
 Call :Dil A 2 Language_!Dil!_1_
-set SSD=•%R%[91m !LA2! %R%[0m
+set SSD_Info=%R%[91m !LA2! %R%[0m
 goto Optimizer
 
-:: ██████████████████████████████████████████████████████████████████
+REM ██████████████████████████████████████████████████████████████████
 :Optimizer
 mode con cols=100 lines=23
 FOR %%a in (YD LA LB LT LS) do (set %%a=)
 echo ►%R%[93m SSD_Optimizer │ %ABC%%R%[0m
-echo !SSD!
+echo •%SSD_Info%
 Call :Dil A 2 Language_!Dil!_10_
 Call :Dil B 2 Language_!Dil!_9_
 echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
-::echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
 echo %R%[92m ♦ %R%[90m= !LA2! │ █ = !LB2!
 Call :Dil A 2 Language_!Dil!_11_
 Call :Dil B 2 Language_!Dil!_12_
 echo %R%[90m !LA2! = E,1,2 │ !LB2! = D,2,5
 echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
-::echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
 set Yuzde_Deger=0
 Call :Dil Z 2 Language_!Dil!_5_
 Call :Dil Y 2 Language_!Dil!_6_
@@ -154,7 +151,6 @@ FOR /L %%a in (1,1,13) do (
 	if %%a EQU 13 (Call :Kontrol_%%a Servis_Query&Call :Total 1 "%%a" "Language_Menu_!Dil!_%%a_" "!LY2!")
 )
 echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
-::echo %R%[90m▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬%R%[0m
 Call :Dil A 2 Language_!Dil!_8_
 set /p Menu=► %R%[92m!LA2! %R%[90m[E,1,2,3,D,6,7,8] = %R%[0m
 Call :Upper "%Menu%" "Menu"
@@ -167,45 +163,45 @@ echo.&echo ►%R%[92m !LA2! %R%[0m
 timeout /t 2 /nobreak > NUL
 goto Optimizer
 
-:: ██████████████████████████████████████████████████████████████████
+REM ██████████████████████████████████████████████████████████████████
 :__HANGAR__
 :Dil
-:: Dil verilerini buradan alıyorum. Call komutu ile buraya uygun değerleri gönderiyorum.
-:: %~1= Harf │ %~2= tokens değeri │ %~3= Find değeri
+REM Dil verilerini buradan alıyorum. Call komutu ile buraya uygun değerleri gönderiyorum.
+REM %~1= Harf │ %~2= tokens değeri │ %~3= Find değeri
 set L%~1%~2=
 FOR /F "delims=> tokens=%~2" %%g in ('Findstr /i "%~3" %Konum%\SSD_Optimizer.CMD 2^>NUL') do (set L%~1%~2=%%g)
 goto :eof
 
-:: -------------------------------------------------------------
+REM -------------------------------------------------------------
 :Powershell
-:: chcp 65001 kullanıldığında Powershell komutları ekranı kompakt görünüme sokuyor. Bunu önlemek için bu bölümde uygun geçişi sağlıyorum.
+REM chcp 65001 kullanıldığında Powershell komutları ekranı kompakt görünüme sokuyor. Bunu önlemek için bu bölümde uygun geçişi sağlıyorum.
 chcp 437 > NUL 2>&1
 Powershell -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -C %*
 chcp 65001 > NUL 2>&1
 goto :eof
 
-:: -------------------------------------------------------------
+REM -------------------------------------------------------------
 :ABC
 set ABC=OgnitorenKs
 goto :eof 
 
-:: -------------------------------------------------------------
+REM -------------------------------------------------------------
 :Uzunluk
-:: %~1: Değişken değeri  %~2: Uzunluğu hesaplanacak olan değer
+REM %~1: Değişken değeri  %~2: Uzunluğu hesaplanacak olan değer
 chcp 437 > NUL
 FOR /F "tokens=*" %%a in ('Powershell -C "'%~2'.Length"') do (set Uzunluk%~1=%%a)
 chcp 65001 > NUL
 goto :eof
 
-:: -------------------------------------------------------------
+REM -------------------------------------------------------------
 :Upper
-:: Bu bölüme yönlendirdiğim kelimeleri büyük harf yaptırıyorum.
+REM Bu bölüme yönlendirdiğim kelimeleri büyük harf yaptırıyorum.
 chcp 437 > NUL 2>&1
 FOR /F %%g in ('Powershell -command "'%~1'.ToUpper()"') do (set %~2=%%g)
 chcp 65001 > NUL 2>&1
 goto :eof
 
-:: ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+REM ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 :Total
 Call :Dil A 2 %~3
 if !Yuzde! EQU %~1 (set /a YD+=1)
@@ -214,7 +210,7 @@ if %~2 GTR 9 (echo  %R%[92m%~2%R%[90m- !Check!%R%[33m !LA2! %R%[90m[!LZ2!= %~4]%
 if %~2 LEQ 9 (echo  %R%[92m %~2%R%[90m- !Check!%R%[33m !LA2! %R%[90m[!LZ2!= %~4]%R%[0m)
 goto :eof
 
-:: -------------------------------------------------------------
+REM -------------------------------------------------------------
 :Reg_Query
 reg query "%~1" /v "%~2" > NUL 2>&1
 	if !errorlevel! NEQ 0 (set Check=%R%[90m█%R%[0m&goto :eof)
@@ -224,7 +220,7 @@ FOR /F "skip=2 tokens=3" %%a in ('reg query "%~1" /v "%~2" 2^>NUL') do (
 )
 goto :eof
 
-:: -------------------------------------------------------------
+REM -------------------------------------------------------------
 :Servis_Query
 reg query "HKLM\SYSTEM\CurrentControlSet\Services\%~1" /v "Start" > NUL 2>&1
 	if !errorlevel! NEQ 0 (set Yuzde=1&set Check=%R%[90m█%R%[0m)
@@ -234,7 +230,7 @@ reg query "HKLM\SYSTEM\CurrentControlSet\Services\%~1" /v "Start" > NUL 2>&1
 						  )
 goto :eof
 
-:: -------------------------------------------------------------
+REM -------------------------------------------------------------
 :SC
 if !Proces! EQU E (sc config %~1 start= %~2 > NUL 2>&1
 				   net start %~1 /y > NUL 2>&1
@@ -244,7 +240,7 @@ if !Proces! EQU D (sc config %~1 start= disabled > NUL 2>&1
 				  )
 goto :eof
 
-:: ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+REM ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 :Reg_ON
 Reg add "%~1" /f /v "%~2" /t "%~3" /d "%~4" > NUL 2>&1
 goto :eof
@@ -256,36 +252,36 @@ goto :eof
 :RegAdd
 Reg add "%~1" /f /v "%~2" /t "%~3" /d "%~4" > NUL 2>&1
 goto :eof
-::
+REM
 :RegVeAdd
 Reg add "%~1" /f /ve /t "%~2" /d "%~3" > NUL 2>&1
 goto :eof
-::
+REM
 :RegDel
 Reg delete %* /f > NUL 2>&1
 goto :eof
-:: -------------------------------------------------------------
+REM -------------------------------------------------------------
 :Kontrol_1
-:: Hazırda beklet kapat
+REM Hazırda beklet kapat
 set Yuzde=0
 Call :%~1 "HKLM\System\CurrentControlSet\Control\Power" "HibernateEnabled" REG_DWORD 0x1 0x0
 Call :%~1 "HKLM\System\CurrentControlSet\Control\Power" "HibernateEnabledDefault" REG_DWORD 0x1 0x0
 goto :eof
 
 :Kontrol_2
-:: Zaman damgası
+REM Zaman damgası
 set Yuzde=0
 Call :%~1 "HKLM\System\CurrentControlSet\Control\FileSystem" "NtfsDisableLastAccessUpdate" REG_DWORD 0x80000002 0x80000001
 goto :eof
 
 :Kontrol_3
-:: Fastboot
+REM Fastboot
 set Yuzde=0
 Call :%~1 "HKLM\System\CurrentControlSet\Control\Power" "HiberbootEnabled" REG_DWORD 0x1 0x0
 goto :eof
 
 :Kontrol_4
-:: Thumbnail cache
+REM Thumbnail cache
 set Yuzde=0
 Call :%~1 "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" "NoThumbnailCache" REG_DWORD 0x1 0x0
 Call :%~1 "HKCU\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer" "DisableThumbnailCache" REG_DWORD 0x1 0x0
@@ -297,13 +293,13 @@ Call :%~1 "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Explorer" "Di
 goto :eof
 
 :Kontrol_5
-:: Windows çekirdeğinin değiştirilmesi │ Aç=0 kapat=1
+REM Windows çekirdeğinin değiştirilmesi │ Aç=0 kapat=1
 set Yuzde=0
 Call :%~1 "HKLM\System\CurrentControlSet\Control\Session Manager\Memory Management" "DisablePagingExecutive" REG_DWORD 0x0 0x1
 goto :eof
 
 :Kontrol_6
-:: Prefetch │ Aç=1 kapat=0
+REM Prefetch │ Aç=1 kapat=0
 set Yuzde=0
 Call :%~1 "HKLM\System\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" "EnablePrefetcher" REG_DWORD 0x1 0x0
 Call :%~1 "HKLM\System\CurrentControlSet\Control\Session Manager\Memory Management\PrefetchParameters" "EnableSuperFetch" REG_DWORD 0x1 0x0
@@ -313,26 +309,26 @@ Call :%~2 Sysmain Auto
 goto :eof
 
 :Kontrol_7
-:: Önyükleme dosyalarının birleştirilmesini kapat │ Açmak için "Y" değerini gir
+REM Önyükleme dosyalarının birleştirilmesini kapat │ Açmak için "Y" değerini gir
 set Yuzde=0
 Call :%~1 "HKLM\SOFTWARE\Microsoft\Dfrg\BootOptimizeFunction" "Enable" REG_SZ Y N
 goto :eof
 
 :Kontrol_8
-:: Windows olay günlüğünü kapat │ Aç=1 kapat=0
+REM Windows olay günlüğünü kapat │ Aç=1 kapat=0
 set Yuzde=0
 Call :%~1 "HKLM\SOFTWARE\Microsoft\Wbem\CIMOM" "EnableEvents" REG_DWORD 0x1 0x0
 Call :%~1 "HKLM\SOFTWARE\Microsoft\Wbem\CIMOM" "Logging" REG_SZ 0x1 0x0
 goto :eof
 
 :Kontrol_9
-:: 16-bit Dos uyumluluğu için ad oluşturmayı kapat │ Aç=0 kapat=1
+REM 16-bit Dos uyumluluğu için ad oluşturmayı kapat │ Aç=0 kapat=1
 set Yuzde=0
 Call :%~1 "HKLM\System\CurrentControlSet\Control\FileSystem" "NtfsDisable8dot3NameCreation" REG_DWORD 0x0 0x1
 goto :eof
 
 :Kontrol_10
-:: Trim özelliğini aç
+REM Trim özelliğini aç
 set Yuzde=0
 Call :RegDel "HKLM\SYSTEM\CurrentControlSet\Policies" /v "DisableDeleteNotification"
 set Check=%R%[92m♦%R%[0m
@@ -375,7 +371,7 @@ if %~1 GEQ 11 (if !Proces! EQU E (Call :Dil A 2 Language_Menu_!Dil!_%~1_&echo �
 			  )
 goto :eof
 
-:: ██████████████████████████████████████████████████████████████████
+REM ██████████████████████████████████████████████████████████████████
 :__DİL_HANGAR__
 :Turkish
 Language_TR_1_>SSD bulunamadı>
