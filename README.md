@@ -1,5 +1,5 @@
 #### Prepared by: Hüseyin UZUNYAYLA / OgnitorenKs
-- ► Discord: https://discord.gg/zwCDKnAKSw
+- ► Discord: [https://discord.gg/zwCDKnAKSw](https://discord.gg/cx3rHb4Zjg)
 - ► Mail: ognitorenks@gmail.com
 - ► Site: [https://ognitorenks.blospot.com](https://ognitorenks.blospot.com)
 - Supported languages = English │ Turkish
